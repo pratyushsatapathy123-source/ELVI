@@ -1,0 +1,229 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "User profile, care settings, and privacy preferences",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string", "description": "Unique user ID matching auth.uid", "maxLength": 128 },
+        "name": { "type": "string", "description": "User display name", "maxLength": 120 },
+        "email": { "type": "string", "description": "User contact email", "maxLength": 200 },
+        "initials": { "type": "string", "description": "User initials for avatar", "maxLength": 10 },
+        "planLabel": { "type": "string", "description": "Membership tier label", "maxLength": 50 },
+        "pcosStatus": { "type": "string", "description": "PCOS tracking status", "enum": ["confirmed", "monitoring", "unsure", "yes", "no"] },
+        "onboardingCompleted": { "type": "boolean", "description": "Whether first-login onboarding was completed" },
+        "hasUploadedInitialReport": { "type": "boolean", "description": "Whether user attached an initial report during onboarding" },
+        "weightMonitoringOptIn": { "type": "boolean", "description": "Whether body weight tracking is enabled" },
+        "interfaceLanguage": { "type": "string", "description": "Language choice", "enum": ["English", "हिन्दी", "ଓଡ଼ିଆ"] },
+        "comfortableReading": { "type": "boolean", "description": "High contrast reading typography preference" },
+        "reduceMotion": { "type": "boolean", "description": "Reduce motion setting" },
+        "enableMemory": { "type": "boolean", "description": "Consent to retain conversational memory" },
+        "discreetMode": { "type": "boolean", "description": "Mask sensitive reminder text on lock screen" },
+        "quietHoursLabel": { "type": "string", "description": "Quiet hours window description", "maxLength": 60 },
+        "createdAt": { "type": "string", "description": "Account creation ISO timestamp", "maxLength": 50 },
+        "updatedAt": { "type": "string", "description": "Last update ISO timestamp", "maxLength": 50 }
+      },
+      "required": ["userId", "name", "email", "pcosStatus", "createdAt"]
+    },
+    "CycleRecord": {
+      "title": "CycleRecord",
+      "description": "Menstrual cycle and period record",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Cycle record ID", "maxLength": 128 },
+        "userId": { "type": "string", "description": "Owner user ID", "maxLength": 128 },
+        "startDate": { "type": "string", "description": "Period start date YYYY-MM-DD", "maxLength": 20 },
+        "endDate": { "type": "string", "description": "Period end date YYYY-MM-DD", "maxLength": 20 },
+        "flowIntensity": { "type": "string", "description": "Flow intensity", "enum": ["Light", "Medium", "Heavy", "Spotting"] },
+        "notes": { "type": "string", "description": "User period notes", "maxLength": 1000 },
+        "createdAt": { "type": "string", "description": "Creation timestamp", "maxLength": 50 }
+      },
+      "required": ["id", "userId", "startDate", "endDate", "flowIntensity", "createdAt"]
+    },
+    "CheckInRecord": {
+      "title": "CheckInRecord",
+      "description": "Daily wellness, symptom, food, and hydration check-in",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Check-in ID", "maxLength": 128 },
+        "userId": { "type": "string", "description": "Owner user ID", "maxLength": 128 },
+        "date": { "type": "string", "description": "Date YYYY-MM-DD", "maxLength": 20 },
+        "timestamp": { "type": "string", "description": "Submission timestamp", "maxLength": 50 },
+        "moods": { "type": "array", "description": "Selected mood tags" },
+        "symptoms": { "type": "array", "description": "Physical symptoms reported" },
+        "discomfortIntensity": { "type": "string", "description": "Overall discomfort scale", "enum": ["None noted", "Mild", "Noticeable", "Moderate", "Intense"] },
+        "energyLevel": { "type": "string", "description": "Energy vitality level", "enum": ["Restful / Depleted", "Steady", "Moderate", "High / Vibrant"] },
+        "bleedingOrSpotting": { "type": "boolean", "description": "Bleeding/spotting presence" },
+        "notes": { "type": "string", "description": "Reflective text", "maxLength": 2000 },
+        "meals": { "type": "object", "description": "Meals logged for the day" },
+        "hydrationCups": { "type": "number", "description": "Cups of water or fluid" }
+      },
+      "required": ["id", "userId", "date", "discomfortIntensity", "energyLevel", "hydrationCups"]
+    },
+    "TimelineEntry": {
+      "title": "TimelineEntry",
+      "description": "Chronological entry in user health journal",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Timeline entry ID", "maxLength": 128 },
+        "userId": { "type": "string", "description": "Owner user ID", "maxLength": 128 },
+        "dateLabel": { "type": "string", "description": "Human readable date label", "maxLength": 100 },
+        "isoDate": { "type": "string", "description": "ISO date YYYY-MM-DD", "maxLength": 20 },
+        "cycleDayLabel": { "type": "string", "description": "Optional cycle day label", "maxLength": 50 },
+        "category": { "type": "string", "description": "Entry category", "enum": ["menstrual", "symptoms", "nourishment", "clinical", "notes"] },
+        "sourceBadge": { "type": "string", "description": "Source attribution badge", "maxLength": 100 },
+        "timeLabel": { "type": "string", "description": "Display time label", "maxLength": 50 },
+        "title": { "type": "string", "description": "Entry title", "maxLength": 200 },
+        "description": { "type": "string", "description": "Detailed description or quote", "maxLength": 3000 },
+        "tags": { "type": "array", "description": "Tags list" },
+        "symptomCards": { "type": "array", "description": "Symptom cards breakdown" },
+        "mealsSummary": { "type": "object", "description": "Meals breakdown object" },
+        "aiProposal": { "type": "object", "description": "AI suggestion requiring confirmation" },
+        "clinicalLab": { "type": "object", "description": "Lab test panel metrics" },
+        "createdAt": { "type": "string", "description": "Entry creation timestamp", "maxLength": 50 }
+      },
+      "required": ["id", "userId", "dateLabel", "isoDate", "category", "sourceBadge", "title"]
+    },
+    "ClinicalDocument": {
+      "title": "ClinicalDocument",
+      "description": "Uploaded medical lab report or clinician document record",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Document ID", "maxLength": 128 },
+        "userId": { "type": "string", "description": "Owner user ID", "maxLength": 128 },
+        "fileName": { "type": "string", "description": "Original file name", "maxLength": 255 },
+        "fileSize": { "type": "number", "description": "File size in bytes" },
+        "mimeType": { "type": "string", "description": "MIME type", "maxLength": 100 },
+        "uploadDate": { "type": "string", "description": "Upload date YYYY-MM-DD", "maxLength": 20 },
+        "status": { "type": "string", "description": "Processing status", "enum": ["uploaded", "extracted", "confirmed"] },
+        "extractedMetrics": { "type": "array", "description": "Structured extracted lab values" },
+        "createdAt": { "type": "string", "description": "Creation timestamp", "maxLength": 50 }
+      },
+      "required": ["id", "userId", "fileName", "uploadDate", "status"]
+    },
+    "GeneratedReport": {
+      "title": "GeneratedReport",
+      "description": "Synthesized ELVI Health Report for clinician consultation",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Report ID", "maxLength": 128 },
+        "userId": { "type": "string", "description": "Owner user ID", "maxLength": 128 },
+        "title": { "type": "string", "description": "Report title", "maxLength": 200 },
+        "subtitle": { "type": "string", "description": "Report subtitle", "maxLength": 300 },
+        "typeBadge": { "type": "string", "description": "Type of report badge", "maxLength": 100 },
+        "dateRange": { "type": "string", "description": "Date coverage window", "maxLength": 100 },
+        "subDate": { "type": "string", "description": "Generation date text", "maxLength": 100 },
+        "fullReport": { "type": "object", "description": "Full structured AI generated report sections" },
+        "createdAt": { "type": "string", "description": "Creation timestamp", "maxLength": 50 }
+      },
+      "required": ["id", "userId", "title", "subtitle", "typeBadge", "dateRange"]
+    },
+    "VerificationCode": {
+      "title": "VerificationCode",
+      "description": "Server-side secure numeric OTP verification metadata",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string", "description": "Owner user ID", "maxLength": 128 },
+        "email": { "type": "string", "description": "User email address", "maxLength": 200 },
+        "hash": { "type": "string", "description": "SHA-256 hashed OTP code", "maxLength": 128 },
+        "attempts": { "type": "number", "description": "Number of failed verification attempts" },
+        "verified": { "type": "boolean", "description": "Verification status" },
+        "expiresAt": { "type": "number", "description": "Expiration timestamp in ms" },
+        "createdAt": { "type": "string", "description": "Creation ISO timestamp", "maxLength": 50 }
+      },
+      "required": ["userId", "email", "hash", "expiresAt"]
+    },
+    "ReminderItem": {
+      "title": "ReminderItem",
+      "description": "User scheduled care reminder",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Reminder ID", "maxLength": 128 },
+        "userId": { "type": "string", "description": "Owner user ID", "maxLength": 128 },
+        "category": { "type": "string", "description": "Reminder category", "enum": ["period", "checkin", "hydration", "wellbeing", "clinical"] },
+        "title": { "type": "string", "description": "Reminder title", "maxLength": 200 },
+        "badgeText": { "type": "string", "description": "Badge description", "maxLength": 100 },
+        "secondaryBadge": { "type": "string", "description": "Secondary badge", "maxLength": 100 },
+        "description": { "type": "string", "description": "Supportive copy", "maxLength": 1000 },
+        "cadenceLabel": { "type": "string", "description": "Cadence text", "maxLength": 100 },
+        "timeLabel": { "type": "string", "description": "Time display", "maxLength": 100 },
+        "extraMeta": { "type": "string", "description": "Extra privacy meta", "maxLength": 100 },
+        "clinicalNote": { "type": "string", "description": "Clinical guardrail note", "maxLength": 500 },
+        "active": { "type": "boolean", "description": "Whether reminder is active" },
+        "createdAt": { "type": "string", "description": "Creation timestamp", "maxLength": 50 }
+      },
+      "required": ["id", "userId", "category", "title", "cadenceLabel", "timeLabel", "active"]
+    },
+    "AiMemory": {
+      "title": "AiMemory",
+      "description": "Consent-governed non-clinical memory context for AI Companion",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Memory ID", "maxLength": 128 },
+        "userId": { "type": "string", "description": "Owner user ID", "maxLength": 128 },
+        "text": { "type": "string", "description": "Contextual memory snippet", "maxLength": 500 },
+        "category": { "type": "string", "description": "Memory category", "maxLength": 50 },
+        "createdAt": { "type": "string", "description": "Creation timestamp", "maxLength": 50 }
+      },
+      "required": ["id", "userId", "text", "createdAt"]
+    },
+    "ChatMessage": {
+      "title": "ChatMessage",
+      "description": "AI Companion conversation message",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Message ID", "maxLength": 128 },
+        "userId": { "type": "string", "description": "Owner user ID", "maxLength": 128 },
+        "sender": { "type": "string", "description": "Message sender", "enum": ["user", "elvi"] },
+        "title": { "type": "string", "description": "Optional message header", "maxLength": 150 },
+        "paragraphs": { "type": "array", "description": "Message paragraphs" },
+        "timestamp": { "type": "string", "description": "Display time", "maxLength": 50 },
+        "proposal": { "type": "object", "description": "Extracted unconfirmed health record proposal" },
+        "createdAt": { "type": "string", "description": "Creation timestamp", "maxLength": 50 }
+      },
+      "required": ["id", "userId", "sender", "paragraphs", "timestamp"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "UserProfile",
+      "description": "User profile document containing care and privacy preferences"
+    },
+    "/users/{userId}/cycles/{cycleId}": {
+      "schema": "CycleRecord",
+      "description": "User menstrual cycle records"
+    },
+    "/users/{userId}/checkins/{checkinId}": {
+      "schema": "CheckInRecord",
+      "description": "User daily symptom, mood, nourishment, and hydration check-in records"
+    },
+    "/users/{userId}/timeline/{timelineId}": {
+      "schema": "TimelineEntry",
+      "description": "Unified chronological health journal timeline entries"
+    },
+    "/users/{userId}/clinical_documents/{docId}": {
+      "schema": "ClinicalDocument",
+      "description": "Uploaded medical lab panels and clinical documents"
+    },
+    "/users/{userId}/reports/{reportId}": {
+      "schema": "GeneratedReport",
+      "description": "Personalized health summary reports generated for consultations"
+    },
+    "/users/{userId}/reminders/{reminderId}": {
+      "schema": "ReminderItem",
+      "description": "Scheduled care reminders and quiet hours cadence"
+    },
+    "/users/{userId}/ai_memories/{memoryId}": {
+      "schema": "AiMemory",
+      "description": "Consent-governed conversational memory context items"
+    },
+    "/users/{userId}/chat_messages/{messageId}": {
+      "schema": "ChatMessage",
+      "description": "AI Companion conversation message logs"
+    },
+    "/verification_codes/{userId}": {
+      "schema": "VerificationCode",
+      "description": "Server-side secure numeric OTP verification metadata"
+    }
+  }
+}

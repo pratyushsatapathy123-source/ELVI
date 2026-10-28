@@ -1,0 +1,40 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --elvi-cherry: #890149;
+    --elvi-alabaster: #F3F3E7;
+    --elvi-dusty-rose: #D9A2B5;
+    --elvi-warm-ink: #30232A;
+    --elvi-sidebar-active-bg: #EADCE0;
+    --elvi-surface-card: #F7F7EC;
+    --elvi-surface-elevated: #FAF9F0;
+    --elvi-border: rgba(217, 162, 181, 0.45);
+    --font-serif: 'DM Serif Display', Georgia, serif;
+    --font-sans: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  }
+
+  body {
+    font-family: var(--font-sans);
+    background-color: var(--elvi-alabaster);
+    color: var(--elvi-warm-ink);
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+
+  h1, .font-editorial {
+    font-family: var(--font-serif);
+  }
+}
+
+.font-serif-elvi {
+  font-family: var(--font-serif);
+}
+
+.font-sans-elvi {
+  font-family: var(--font-sans);
+}
+
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+

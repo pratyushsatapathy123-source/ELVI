@@ -1,0 +1,51 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Global Safety Net — Default Deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isDemoFixture(userId) {
+      return userId == 'elvi_demo_fixture_v1';
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() > 0 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    // User profile document and personal settings
+    match /users/{userId} {
+      allow get: if (isOwner(userId) || isDemoFixture(userId)) && isValidId(userId);
+      allow list: if false; // Users cannot list other users
+      allow create: if ((isOwner(userId) && incoming().userId == userId) || (isDemoFixture(userId) && incoming().isDemo == true)) && isValidId(userId);
+      allow update: if ((isOwner(userId) && incoming().userId == userId) || (isDemoFixture(userId) && incoming().isDemo == true)) && isValidId(userId);
+      allow delete: if (isOwner(userId) || isDemoFixture(userId)) && isValidId(userId);
+
+      // User subcollections (cycles, checkins, timeline, clinical_documents, reports, reminders, ai_memories, chat_messages)
+      match /{subcollection}/{docId} {
+        allow get, list: if (isOwner(userId) || isDemoFixture(userId)) && isValidId(userId);
+        allow create: if ((isOwner(userId) && incoming().userId == userId) || (isDemoFixture(userId) && incoming().isDemo == true)) && isValidId(userId) && isValidId(docId);
+        allow update: if ((isOwner(userId) && incoming().userId == userId) || (isDemoFixture(userId) && incoming().isDemo == true)) && isValidId(userId) && isValidId(docId);
+        allow delete: if (isOwner(userId) || isDemoFixture(userId)) && isValidId(userId) && isValidId(docId);
+      }
+    }
+
+    // Verification codes are strictly inaccessible to client reads and writes (server-side only)
+    match /verification_codes/{userId} {
+      allow read, write: if false;
+    }
+  }
+}

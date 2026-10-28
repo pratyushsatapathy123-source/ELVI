@@ -1,0 +1,6 @@
+{
+  "name": "ELVI — Health Companion",
+  "description": "Calm, grounded menstrual and reproductive health companion with dedicated PCOS/PCOD care, daily check-ins, health timeline, and clinical report synthesis.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
